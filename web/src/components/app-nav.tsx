@@ -5,6 +5,7 @@ import { Home, Plus, Receipt, User, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { LogoLockup } from "@/components/logo";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -63,9 +64,7 @@ export function AppNav() {
       {showSidebar ? (
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col justify-between border-r border-border bg-card px-5 py-8 print:hidden md:flex">
           <div className="flex flex-col gap-8">
-            <p className="font-display px-2 text-[22px] leading-7 font-extrabold tracking-tight text-foreground">
-              Sharezin
-            </p>
+            <LogoLockup className="px-2" markSize={28} />
             <nav className="flex flex-col gap-1">
               {tabs.map(({ href, label, icon: Icon }) => {
                 const active = isActive(pathname, href);

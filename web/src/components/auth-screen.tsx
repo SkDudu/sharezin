@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { useRef, useState, type ReactNode } from "react";
 import { toast } from "@/components/ui/toast";
 
+import { LogoLockup, LogoMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/ui/hint";
@@ -191,16 +192,17 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
           {/* Mobile brand + theme */}
           <div className="flex flex-col gap-4 md:gap-3.5">
             <div className="flex items-center justify-between md:hidden">
-              <p className="font-display text-[22px] leading-7 font-extrabold tracking-tight text-foreground">
-                Sharezin
-              </p>
+              <LogoLockup markSize={28} />
               <ThemeToggle />
             </div>
 
             <div className="flex flex-col gap-2.5 md:gap-3.5">
-              <p className="hidden text-xs font-semibold tracking-[0.14em] text-primary uppercase md:block">
-                Sharezin
-              </p>
+              <div className="hidden items-center gap-2 md:flex">
+                <LogoMark size={20} />
+                <p className="text-xs font-semibold tracking-[0.14em] text-primary uppercase">
+                  Sharezin
+                </p>
+              </div>
               <h1 className="font-display text-[36px] leading-[1.1] font-extrabold tracking-[-0.03em] text-foreground md:text-4xl md:leading-[1.08]">
                 {t.title}
               </h1>

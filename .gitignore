@@ -8,6 +8,7 @@ node_modules/
 # local tooling
 .DS_Store
 *.pem
+.venv-icons/
 
 # docs (local)
 /docs
