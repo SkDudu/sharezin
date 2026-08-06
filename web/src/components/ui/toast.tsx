@@ -1,6 +1,6 @@
 "use client";
 
-import toast, { Toaster, type ToastOptions } from "react-hot-toast";
+import toast, { Toaster, type DefaultToastOptions } from "react-hot-toast";
 
 /** Sharezin DS — Paper §09 Toasts. Import `toast` from here, not react-hot-toast. */
 export { toast };
@@ -38,7 +38,7 @@ export const toastOptions = {
       secondary: "#0C0C0D",
     },
   },
-} satisfies ToastOptions;
+} satisfies DefaultToastOptions;
 
 export function SharezinToaster() {
   return (

@@ -1,0 +1,10 @@
+node_modules
+web/node_modules
+web/.next
+.next
+.convex
+docs
+.git
+*.tsbuildinfo
+.env*
+.DS_Store

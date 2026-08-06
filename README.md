@@ -81,15 +81,54 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+## Produção (Railway)
+
+Self-hosted: Convex + Postgres + Dashboard + Next no projeto Railway `sharezin`.
+
+| Serviço | URL |
+|---------|-----|
+| App (Next) | https://web-production-2bf38.up.railway.app |
+| Convex API | https://convex-backend-production-ae52.up.railway.app |
+| Dashboard | https://convex-dashboard-production-048f.up.railway.app |
+
+### Variáveis locais (self-host)
+
+Na raiz (`.env.local`, não commitado):
+
+```env
+CONVEX_SELF_HOSTED_URL=https://convex-backend-production-ae52.up.railway.app
+CONVEX_SELF_HOSTED_ADMIN_KEY=<admin key via railway ssh + ./generate_admin_key.sh>
+```
+
+Em `web/.env.local`:
+
+```env
+NEXT_PUBLIC_CONVEX_URL=https://convex-backend-production-ae52.up.railway.app
+```
+
+### Deploy / push
+
+```bash
+# Functions Convex → backend Railway
+npx convex deploy
+
+# Frontend → serviço web
+railway up --service web -m "…"
+```
+
+Dashboard: abra a URL acima e cole a admin key.
+
 ## Scripts
 
 | Comando | Onde | Descrição |
 |---------|------|-----------|
 | `npx convex dev` | raiz | Backend Convex em modo dev |
+| `npx convex deploy` | raiz | Push das functions (self-host ou cloud) |
 | `npm run test` / `npm run test:once` | raiz | Testes do backend |
 | `npm run dev` | `web/` | Next.js em desenvolvimento |
 | `npm run build` | `web/` | Build de produção |
 | `npm run lint` | `web/` | ESLint |
+| `railway up --service web` | raiz | Deploy do Next no Railway |
 
 ## Conceitos
 
