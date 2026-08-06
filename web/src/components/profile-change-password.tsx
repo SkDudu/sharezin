@@ -9,6 +9,9 @@ import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/ui/hint";
 import { Input } from "@/components/ui/input";
+import { enter, exit, io } from "@/lib/motion";
+import { useExitPresence } from "@/lib/use-exit-presence";
+import { cn } from "@/lib/utils";
 
 /** Paper P1 — trocar senha (página mobile / modal desktop). */
 export function ProfileChangePassword({
@@ -23,11 +26,12 @@ export function ProfileChangePassword({
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [pending, setPending] = useState(false);
+  const { show, exiting } = useExitPresence(open);
 
   useEffect(() => {
-    if (!open) return;
+    if (!show) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && open) onClose();
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -36,7 +40,7 @@ export function ProfileChangePassword({
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
+  }, [show, open, onClose]);
 
   useEffect(() => {
     if (!open) {
@@ -69,12 +73,17 @@ export function ProfileChangePassword({
     }
   }
 
-  if (!open) return null;
+  if (!show) return null;
 
   return (
     <>
       {/* Mobile: full page */}
-      <div className="fixed inset-0 z-50 flex flex-col bg-background md:hidden">
+      <div
+        className={cn(
+          "fixed inset-0 z-50 flex flex-col bg-background md:hidden",
+          io(exiting, enter.fade, exit.fade),
+        )}
+      >
         <header className="flex items-center gap-3 px-5 pt-2 pb-4">
           <button
             type="button"
@@ -118,15 +127,22 @@ export function ProfileChangePassword({
         <button
           type="button"
           aria-label="Fechar"
-          className="absolute inset-0 bg-black/72"
+          className={cn(
+            "absolute inset-0 bg-black/72",
+            io(exiting, enter.scrim, exit.scrim),
+          )}
           onClick={onClose}
+          disabled={exiting}
         />
         <form
           onSubmit={onSubmit}
           role="dialog"
           aria-modal
           aria-labelledby="change-password-title"
-          className="relative flex w-full max-w-[520px] flex-col gap-6 rounded-2xl border border-border bg-card p-8"
+          className={cn(
+            "relative flex w-full max-w-[520px] flex-col gap-6 rounded-2xl border border-border bg-card p-8",
+            io(exiting, enter.modal, exit.modal),
+          )}
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 flex-1 flex-col gap-1">

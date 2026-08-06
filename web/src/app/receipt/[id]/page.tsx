@@ -16,15 +16,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { toast } from "@/components/ui/toast";
 
 import { AuthGate } from "@/components/auth-gate";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SheetScrim } from "@/components/sheet-scrim";
 import { ReceiptPageSkeleton } from "@/components/ui/skeleton";
 import { brl, parseReais, relativeTime } from "@/lib/format";
+import { enter } from "@/lib/motion";
 import { useReceiptGet } from "@/lib/use-receipt-get";
 import { cn } from "@/lib/utils";
 
@@ -45,52 +47,6 @@ function shortDate(ts: number) {
     day: "numeric",
     month: "short",
   });
-}
-
-function SheetScrim({
-  open,
-  onClose,
-  children,
-  className,
-}: {
-  open: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  className?: string;
-}) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
-      <button
-        type="button"
-        aria-label="Fechar"
-        className="absolute inset-0 bg-background/70 backdrop-blur-[2px]"
-        onClick={onClose}
-      />
-      <div
-        className={cn(
-          "relative z-10 w-full max-w-lg rounded-t-2xl border border-border bg-card md:rounded-2xl",
-          className,
-        )}
-      >
-        {children}
-      </div>
-    </div>
-  );
 }
 
 function ReceiptDetailContent() {
@@ -222,7 +178,12 @@ function ReceiptDetailContent() {
     : 0;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col pb-28 md:px-12 md:py-10 md:pb-10">
+    <div
+      className={cn(
+        "relative mx-auto flex w-full max-w-6xl flex-1 flex-col pb-28 md:px-12 md:py-10 md:pb-10",
+        enter.fade,
+      )}
+    >
       {/* Header */}
       <header className="flex items-start gap-3 px-5 pt-3 md:px-0">
         <Link

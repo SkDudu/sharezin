@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/toast";
 
 import { Button } from "@/components/ui/button";
+import { enter, exit, io } from "@/lib/motion";
+import { useExitPresence } from "@/lib/use-exit-presence";
 import { cn } from "@/lib/utils";
 
 type Joined = {
@@ -41,11 +43,12 @@ export function GroupJoinSheet({
   const [code, setCode] = useState("");
   const [joined, setJoined] = useState<Joined | null>(null);
   const [pending, setPending] = useState(false);
+  const { show, exiting } = useExitPresence(open);
 
   useEffect(() => {
-    if (!open) return;
+    if (!show) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && open) onClose();
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -54,7 +57,7 @@ export function GroupJoinSheet({
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
+  }, [show, open, onClose]);
 
   useEffect(() => {
     if (!open) {
@@ -89,15 +92,19 @@ export function GroupJoinSheet({
     }
   }
 
-  if (!open) return null;
+  if (!show) return null;
 
   return (
     <div className="fixed inset-0 z-50">
       <button
         type="button"
         aria-label="Fechar"
-        className="absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]"
+        className={cn(
+          "absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]",
+          io(exiting, enter.scrim, exit.scrim),
+        )}
         onClick={onClose}
+        disabled={exiting}
       />
 
       <div
@@ -106,6 +113,7 @@ export function GroupJoinSheet({
         aria-labelledby="group-join-title"
         className={cn(
           "absolute inset-x-0 bottom-0 flex flex-col rounded-t-2xl border-t border-border bg-card px-5 pt-3 pb-7 md:hidden",
+          io(exiting, enter.sheet, exit.sheet),
           step === "joined" ? "items-center gap-5" : "gap-6",
         )}
       >
@@ -134,6 +142,7 @@ export function GroupJoinSheet({
         aria-labelledby="group-join-title"
         className={cn(
           "absolute top-1/2 left-1/2 hidden w-full max-w-[440px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl border border-border bg-card md:flex",
+          io(exiting, enter.modal, exit.modal),
           step === "joined"
             ? "items-center gap-6 px-8 py-10"
             : "gap-7 p-8",

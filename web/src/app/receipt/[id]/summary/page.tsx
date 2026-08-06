@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ReceiptPageSkeleton } from "@/components/ui/skeleton";
 import { brl, brlAmount, relativeTime } from "@/lib/format";
+import { enter } from "@/lib/motion";
 import { useReceiptGet } from "@/lib/use-receipt-get";
 import { cn } from "@/lib/utils";
 
@@ -230,8 +231,12 @@ function SummaryContent() {
   };
 
   return (
-    <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col pb-8 md:px-12 md:py-10">
-      {/* Mobile header */}
+    <div
+      className={cn(
+        "relative mx-auto flex w-full max-w-6xl flex-1 flex-col pb-8 md:px-12 md:py-10",
+        enter.fade,
+      )}
+    >      {/* Mobile header */}
       <header className="flex items-center justify-between gap-3 px-5 pt-2 pb-4 md:hidden print:hidden">
         <Link
           href={`/receipt/${receiptId}`}

@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { AuthGate } from "@/components/auth-gate";
 import { Skeleton } from "@/components/ui/skeleton";
 import { brl, brlWhole } from "@/lib/format";
+import { enter } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 function firstName(name?: string | null) {
@@ -117,7 +118,12 @@ function DashboardContent() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-2 pb-28 md:gap-7 md:px-12 md:py-10 md:pb-10">
+    <div
+      className={cn(
+        "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-2 pb-28 md:gap-7 md:px-12 md:py-10 md:pb-10",
+        enter.fade,
+      )}
+    >
       <header className="flex items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
           <p className="text-[13px] leading-4 font-medium text-muted-foreground">

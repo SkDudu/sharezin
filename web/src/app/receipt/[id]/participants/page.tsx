@@ -12,62 +12,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AuthGate } from "@/components/auth-gate";
 import { Button } from "@/components/ui/button";
+import { SheetScrim } from "@/components/sheet-scrim";
 import { ReceiptPageSkeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { brl } from "@/lib/format";
+import { enter } from "@/lib/motion";
 import { useReceiptGet } from "@/lib/use-receipt-get";
 import { cn } from "@/lib/utils";
-
-// ponytail: SheetScrim duplicated from receipt page; extract if 3rd copy appears
-function SheetScrim({
-  open,
-  onClose,
-  children,
-  className,
-}: {
-  open: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  className?: string;
-}) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
-      <button
-        type="button"
-        aria-label="Fechar"
-        className="absolute inset-0 bg-background/70 backdrop-blur-[2px]"
-        onClick={onClose}
-      />
-      <div
-        className={cn(
-          "relative z-10 w-full max-w-lg rounded-t-2xl border border-border bg-card md:rounded-2xl",
-          className,
-        )}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
 
 function initialOf(name: string) {
   return name.trim().charAt(0).toUpperCase() || "?";
@@ -235,8 +190,12 @@ function ParticipantsContent() {
   }
 
   return (
-    <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col pb-8 md:px-12 md:py-10">
-      <header className="flex items-center gap-3 px-5 pt-2 pb-4 md:hidden">
+    <div
+      className={cn(
+        "relative mx-auto flex w-full max-w-6xl flex-1 flex-col pb-8 md:px-12 md:py-10",
+        enter.fade,
+      )}
+    >      <header className="flex items-center gap-3 px-5 pt-2 pb-4 md:hidden">
         <Link
           href={`/receipt/${receiptId}`}
           aria-label="Voltar"

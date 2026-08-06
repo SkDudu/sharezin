@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ListCardsSkeleton } from "@/components/ui/skeleton";
 import { brl, relativeTime } from "@/lib/format";
+import { enter } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 function initial(name?: string | null, email?: string | null) {
@@ -40,6 +41,9 @@ function ReceiptsContent() {
   }, [receipts, filter]);
 
   const isEmptyAll = receipts !== undefined && receipts.length === 0;
+  // ponytail: HGB-0 for zero open too, not only zero receipts total
+  const showEmptyOpen =
+    receipts !== undefined && filter === "open" && list.length === 0;
   const showFab = list.length > 0;
 
   function setFilter(next: "open" | "closed") {
@@ -50,14 +54,18 @@ function ReceiptsContent() {
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-2 pb-28 md:gap-7 md:px-12 md:py-10 md:pb-10">
       <header className="flex items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
-          {!isEmptyAll ? (
+          {isEmptyAll ? (
+            <p className="hidden text-[13px] leading-4 font-medium text-muted-foreground md:block">
+              Gerencie e entre em contas
+            </p>
+          ) : (
             <p className="text-[13px] leading-4 font-medium text-muted-foreground">
               <span className="md:hidden">
                 {openCount} {openCount === 1 ? "aberto" : "abertos"}
               </span>
               <span className="hidden md:inline">Gerencie e entre em contas</span>
             </p>
-          ) : null}
+          )}
           <h1 className="font-display text-2xl leading-[30px] font-extrabold tracking-[-0.03em] text-foreground md:text-[36px] md:leading-[44px]">
             Recibos
           </h1>
@@ -97,31 +105,35 @@ function ReceiptsContent() {
 
       {receipts === undefined ? (
         <ListCardsSkeleton />
-      ) : isEmptyAll ? (
-        /* Paper R0 — empty recibos */
-        <div className="flex flex-1 flex-col items-center justify-center gap-7 py-10">
-          <div className="flex size-[88px] shrink-0 items-center justify-center rounded-full border border-neutral-100 bg-card md:size-[104px]">
+      ) : showEmptyOpen ? (
+        /* Paper R0 / HGB-0 — empty abertos */
+        <div
+          className={cn(
+            "flex flex-1 flex-col items-center justify-center gap-7 py-6 md:gap-8 md:py-16",
+            enter.fade,
+          )}
+        >          <div className="flex size-[88px] shrink-0 items-center justify-center rounded-full border border-neutral-100 bg-card dark:border-transparent md:size-[104px]">
             <div className="flex items-center">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-background bg-muted text-sm font-bold text-muted-foreground md:size-[42px] md:text-base">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-background bg-neutral-100 text-sm font-bold text-muted-foreground dark:bg-neutral-700 dark:text-neutral-300 md:size-[42px] md:text-base">
                 ?
               </span>
               <span className="-ml-3 flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-background bg-primary text-[15px] font-bold text-primary-foreground md:size-12 md:text-lg">
                 +
               </span>
-              <span className="-ml-3 flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-background bg-muted text-sm font-bold text-muted-foreground md:size-[42px] md:text-base">
+              <span className="-ml-3 flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-background bg-neutral-100 text-sm font-bold text-muted-foreground dark:bg-neutral-700 dark:text-neutral-300 md:size-[42px] md:text-base">
                 ?
               </span>
             </div>
           </div>
           <div className="flex w-full max-w-[280px] flex-col items-center gap-2.5 text-center md:max-w-[360px] md:gap-3">
             <h2 className="font-display text-[26px] leading-8 font-extrabold tracking-[-0.03em] text-foreground md:text-[36px] md:leading-[44px]">
-              Nenhum recibo ainda
+              {isEmptyAll ? "Nenhum recibo ainda" : "Nenhum recibo aberto"}
             </h2>
             <p className="text-[15px] leading-[22px] text-muted-foreground md:text-base md:leading-6">
               Divida a conta do bar. Crie um ou entre com código.
             </p>
           </div>
-          <div className="flex w-full max-w-[280px] flex-col gap-3 md:max-w-none md:flex-row md:justify-center">
+          <div className="flex w-full max-w-[280px] flex-col gap-3 md:w-fit md:max-w-none md:flex-row md:justify-center">
             <Link
               href="/receipt/new"
               className={cn(
@@ -133,10 +145,10 @@ function ReceiptsContent() {
             </Link>
             <Button
               type="button"
-              variant="secondary"
+              variant="outline"
               size="lg"
               onClick={() => setJoinOpen(true)}
-              className="h-[52px] border border-border font-semibold md:px-7"
+              className="h-[52px] border-border bg-card font-semibold md:px-7 dark:border-transparent dark:bg-secondary"
             >
               Entrar com código
             </Button>
@@ -144,10 +156,10 @@ function ReceiptsContent() {
         </div>
       ) : list.length === 0 ? (
         <p className="py-12 text-center text-sm text-muted-foreground">
-          Nenhum recibo {filter === "open" ? "aberto" : "fechado"}.
+          Nenhum recibo fechado.
         </p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className={cn("flex flex-col gap-3", enter.fade)}>
           {list.map((r) => {
             const meta = [
               r.isCreator ? "Criado por você" : "Convidado",

@@ -9,6 +9,9 @@ import { toast } from "@/components/ui/toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { enter, exit, io } from "@/lib/motion";
+import { useExitPresence } from "@/lib/use-exit-presence";
+import { cn } from "@/lib/utils";
 
 /** Desktop modal — criar grupo (Paper: CTA “Novo grupo” na sidebar). */
 export function GroupCreateModal({
@@ -26,21 +29,22 @@ export function GroupCreateModal({
   const [name, setName] = useState("");
   const [pending, setPending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { show, exiting } = useExitPresence(open);
 
   useEffect(() => {
-    if (!open) return;
+    if (!show) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && open) onClose();
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
-    window.setTimeout(() => inputRef.current?.focus(), 50);
+    if (open) window.setTimeout(() => inputRef.current?.focus(), 50);
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
+  }, [show, open, onClose]);
 
   useEffect(() => {
     if (!open) {
@@ -68,22 +72,29 @@ export function GroupCreateModal({
     }
   }
 
-  if (!open) return null;
+  if (!show) return null;
 
   return (
     <div className="fixed inset-0 z-50 hidden items-center justify-center md:flex">
       <button
         type="button"
         aria-label="Fechar"
-        className="absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]"
+        className={cn(
+          "absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]",
+          io(exiting, enter.scrim, exit.scrim),
+        )}
         onClick={onClose}
+        disabled={exiting}
       />
       <form
         onSubmit={onSubmit}
         role="dialog"
         aria-modal
         aria-labelledby="group-create-title"
-        className="relative flex w-full max-w-[440px] flex-col gap-6 rounded-2xl border border-border bg-card p-8"
+        className={cn(
+          "relative flex w-full max-w-[440px] flex-col gap-6 rounded-2xl border border-border bg-card p-8",
+          io(exiting, enter.modal, exit.modal),
+        )}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex min-w-0 flex-1 flex-col gap-2">

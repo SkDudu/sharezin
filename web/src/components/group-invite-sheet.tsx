@@ -9,6 +9,8 @@ import { toast } from "@/components/ui/toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { enter, exit, io } from "@/lib/motion";
+import { useExitPresence } from "@/lib/use-exit-presence";
 import { cn } from "@/lib/utils";
 
 /** Paper G1 — convidar para o grupo (código + email). */
@@ -29,11 +31,12 @@ export function GroupInviteSheet({
   const [email, setEmail] = useState("");
   const [copied, setCopied] = useState(false);
   const [pending, setPending] = useState(false);
+  const { show, exiting } = useExitPresence(open);
 
   useEffect(() => {
-    if (!open) return;
+    if (!show) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && open) onClose();
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -42,7 +45,7 @@ export function GroupInviteSheet({
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
+  }, [show, open, onClose]);
 
   useEffect(() => {
     if (!open) {
@@ -77,15 +80,19 @@ export function GroupInviteSheet({
     }
   }
 
-  if (!open) return null;
+  if (!show) return null;
 
   return (
     <div className="fixed inset-0 z-50">
       <button
         type="button"
         aria-label="Fechar"
-        className="absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]"
+        className={cn(
+          "absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]",
+          io(exiting, enter.scrim, exit.scrim),
+        )}
         onClick={onClose}
+        disabled={exiting}
       />
 
       {/* Mobile sheet */}
@@ -93,7 +100,10 @@ export function GroupInviteSheet({
         role="dialog"
         aria-modal
         aria-labelledby="group-invite-title"
-        className="absolute inset-x-0 bottom-0 flex flex-col gap-5 rounded-t-2xl border-t border-border bg-card px-5 pt-3 pb-7 md:hidden"
+        className={cn(
+          "absolute inset-x-0 bottom-0 flex flex-col gap-5 rounded-t-2xl border-t border-border bg-card px-5 pt-3 pb-7 md:hidden",
+          io(exiting, enter.sheet, exit.sheet),
+        )}
       >
         <div className="flex w-full items-center justify-center">
           <div className="h-1 w-9 shrink-0 rounded-full bg-neutral-600" />
@@ -115,7 +125,10 @@ export function GroupInviteSheet({
         role="dialog"
         aria-modal
         aria-labelledby="group-invite-title"
-        className="absolute top-1/2 left-1/2 hidden w-full max-w-[440px] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-2xl border border-border bg-card p-8 md:flex"
+        className={cn(
+          "absolute top-1/2 left-1/2 hidden w-full max-w-[440px] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-2xl border border-border bg-card p-8 md:flex",
+          io(exiting, enter.modal, exit.modal),
+        )}
       >
         <InviteBody
           groupName={groupName}

@@ -22,6 +22,8 @@ import { GroupLeaveSheet, GroupConfirmSheet } from "@/components/group-leave-she
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ListCardsSkeleton } from "@/components/ui/skeleton";
+import { enter, exit, io } from "@/lib/motion";
+import { useExitPresence } from "@/lib/use-exit-presence";
 import { cn } from "@/lib/utils";
 
 function initial(name?: string | null, email?: string | null) {
@@ -59,6 +61,8 @@ function GroupsContent() {
   const [renameValue, setRenameValue] = useState("");
   const [renamePending, setRenamePending] = useState(false);
   const mobileCreateInputRef = useRef<HTMLInputElement>(null);
+  const mobileCreate = useExitPresence(mobileCreateOpen);
+  const renameSheet = useExitPresence(renamingId !== null);
 
   function openCreate() {
     if (typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches) {
@@ -223,8 +227,12 @@ function GroupsContent() {
         <ListCardsSkeleton />
       ) : groups.length === 0 ? (
         /* Paper G0 — empty grupos */
-        <div className="flex flex-1 flex-col items-center justify-center gap-7 py-10">
-          <div className="flex size-[88px] shrink-0 items-center justify-center rounded-full bg-card md:size-[104px]">
+        <div
+          className={cn(
+            "flex flex-1 flex-col items-center justify-center gap-7 py-10",
+            enter.fade,
+          )}
+        >          <div className="flex size-[88px] shrink-0 items-center justify-center rounded-full bg-card md:size-[104px]">
             <div className="flex items-center">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-background bg-muted text-sm font-bold text-muted-foreground md:size-[42px] md:text-base">
                 ?
@@ -266,7 +274,7 @@ function GroupsContent() {
           </div>
         </div>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className={cn("flex flex-col gap-3", enter.fade)}>
           {groups.map((g) => {
             const open = expandedId === g._id;
             return (
@@ -405,17 +413,24 @@ function GroupsContent() {
         </ul>
       )}
 
-      {mobileCreateOpen ? (
+      {mobileCreate.show ? (
         <div className="fixed inset-0 z-50 md:hidden">
           <button
             type="button"
             aria-label="Fechar"
-            className="absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]"
+            className={cn(
+              "absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]",
+              io(mobileCreate.exiting, enter.scrim, exit.scrim),
+            )}
             onClick={() => setMobileCreateOpen(false)}
+            disabled={mobileCreate.exiting}
           />
           <form
             onSubmit={onCreateMobile}
-            className="absolute inset-x-0 bottom-0 flex flex-col gap-5 rounded-t-2xl border-t border-border bg-card px-5 pt-3 pb-7"
+            className={cn(
+              "absolute inset-x-0 bottom-0 flex flex-col gap-5 rounded-t-2xl border-t border-border bg-card px-5 pt-3 pb-7",
+              io(mobileCreate.exiting, enter.sheet, exit.sheet),
+            )}
           >
             <div className="flex w-full items-center justify-center">
               <div className="h-1 w-9 shrink-0 rounded-full bg-neutral-600" />
@@ -464,17 +479,24 @@ function GroupsContent() {
         onJoinInstead={() => setJoinOpen(true)}
       />
 
-      {renamingId ? (
+      {renameSheet.show ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
           <button
             type="button"
             aria-label="Fechar"
-            className="absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]"
+            className={cn(
+              "absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]",
+              io(renameSheet.exiting, enter.scrim, exit.scrim),
+            )}
             onClick={() => setRenamingId(null)}
+            disabled={renameSheet.exiting}
           />
           <form
             onSubmit={onRename}
-            className="relative flex w-full max-w-[400px] flex-col gap-5 rounded-2xl border border-border bg-card p-6"
+            className={cn(
+              "relative flex w-full max-w-[400px] flex-col gap-5 rounded-2xl border border-border bg-card p-6",
+              io(renameSheet.exiting, enter.modal, exit.modal),
+            )}
           >
             <h2 className="font-display text-xl font-bold text-foreground">
               Renomear grupo

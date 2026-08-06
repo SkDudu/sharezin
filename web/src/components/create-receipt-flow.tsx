@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/ui/hint";
 import { Input } from "@/components/ui/input";
 import { parseNonNegReais } from "@/lib/format";
+import { enter } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 type Created = {
@@ -300,28 +301,45 @@ export function CreateReceiptFlow() {
         </div>
 
         {created ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/72 p-6 backdrop-blur-[2px]">
-            <InviteSuccess
-              created={created}
-              onGo={() => goToReceipt(created.receiptId)}
-            />
+          <div
+            className={cn(
+              "fixed inset-0 z-50 flex items-center justify-center bg-background/72 p-6 backdrop-blur-[2px]",
+              enter.scrim,
+            )}
+          >
+            <div className={enter.modal}>
+              <InviteSuccess
+                created={created}
+                onGo={() => goToReceipt(created.receiptId)}
+              />
+            </div>
           </div>
         ) : null}
       </div>
 
       {/* Desktop: modal over app chrome */}
-      <div className="fixed inset-0 z-50 hidden items-center justify-center bg-black/72 p-10 md:flex">
+      <div
+        className={cn(
+          "fixed inset-0 z-50 hidden items-center justify-center bg-black/72 p-10 md:flex",
+          enter.scrim,
+        )}
+      >
         {created ? (
-          <InviteSuccess
-            created={created}
-            onGo={() => goToReceipt(created.receiptId)}
-          />
+          <div className={enter.modal}>
+            <InviteSuccess
+              created={created}
+              onGo={() => goToReceipt(created.receiptId)}
+            />
+          </div>
         ) : (
           <div
             role="dialog"
             aria-modal
             aria-labelledby="create-receipt-title"
-            className="flex w-full max-w-[520px] flex-col gap-6 rounded-2xl border border-border bg-card p-8"
+            className={cn(
+              "flex w-full max-w-[520px] flex-col gap-6 rounded-2xl border border-border bg-card p-8",
+              enter.modal,
+            )}
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex min-w-0 flex-1 flex-col gap-1">

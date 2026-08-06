@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { enter, exit, io } from "@/lib/motion";
+import { useExitPresence } from "@/lib/use-exit-presence";
 import { cn } from "@/lib/utils";
 
 /** Paper P2 — confirmar sair (bottom sheet mobile / modal desktop). */
@@ -16,11 +18,12 @@ export function ProfileSignOutSheet({
   onConfirm: () => Promise<void>;
 }) {
   const [pending, setPending] = useState(false);
+  const { show, exiting } = useExitPresence(open);
 
   useEffect(() => {
-    if (!open) return;
+    if (!show) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && open) onClose();
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -29,7 +32,7 @@ export function ProfileSignOutSheet({
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
+  }, [show, open, onClose]);
 
   useEffect(() => {
     if (!open) setPending(false);
@@ -44,15 +47,19 @@ export function ProfileSignOutSheet({
     }
   }
 
-  if (!open) return null;
+  if (!show) return null;
 
   return (
     <div className="fixed inset-0 z-50">
       <button
         type="button"
         aria-label="Fechar"
-        className="absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]"
+        className={cn(
+          "absolute inset-0 bg-[#0C0C0D]/72 backdrop-blur-[2px]",
+          io(exiting, enter.scrim, exit.scrim),
+        )}
         onClick={onClose}
+        disabled={exiting}
       />
 
       {/* Mobile bottom sheet */}
@@ -60,7 +67,10 @@ export function ProfileSignOutSheet({
         role="dialog"
         aria-modal
         aria-labelledby="sign-out-title"
-        className="absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-2xl border-t border-border bg-card px-5 pt-4 pb-7 md:hidden"
+        className={cn(
+          "absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-2xl border-t border-border bg-card px-5 pt-4 pb-7 md:hidden",
+          io(exiting, enter.sheet, exit.sheet),
+        )}
       >
         <div className="flex w-full justify-center pt-1">
           <div className="h-1 w-10 shrink-0 rounded-full bg-neutral-600" />
@@ -77,7 +87,10 @@ export function ProfileSignOutSheet({
         role="dialog"
         aria-modal
         aria-labelledby="sign-out-title-desktop"
-        className="absolute top-1/2 left-1/2 hidden w-full max-w-[440px] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-2xl border border-border bg-card px-5 pt-4 pb-7 md:flex"
+        className={cn(
+          "absolute top-1/2 left-1/2 hidden w-full max-w-[440px] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-2xl border border-border bg-card px-5 pt-4 pb-7 md:flex",
+          io(exiting, enter.modal, exit.modal),
+        )}
       >
         <div className="flex w-full justify-center pt-1">
           <div className="h-1 w-10 shrink-0 rounded-full bg-neutral-600" />

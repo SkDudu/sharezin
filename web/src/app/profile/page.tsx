@@ -14,6 +14,8 @@ import { useTheme } from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { enter } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 function initial(name?: string | null, email?: string | null) {
   const source = name?.trim() || email?.trim() || "?";
@@ -61,7 +63,7 @@ function ProfileContent() {
             <Skeleton className="h-12 w-full rounded-xl md:w-40" />
           </div>
         ) : (
-          <>
+          <div className={cn("flex flex-col gap-5", enter.fade)}>
             {/* Avatar card — stacked mobile, row desktop */}
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-5 py-7 md:flex-row md:gap-5 md:px-8">
               <div className="flex size-[88px] shrink-0 items-center justify-center rounded-full bg-primary md:size-20">
@@ -132,7 +134,7 @@ function ProfileContent() {
             >
               Sair
             </Button>
-          </>
+          </div>
         )}
       </div>
 
