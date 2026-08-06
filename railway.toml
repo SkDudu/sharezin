@@ -1,0 +1,9 @@
+# ponytail: root=repo so @convex → ../convex resolves; web/ alone broke build
+[build]
+builder = "RAILPACK"
+buildCommand = "cd web && npm ci && npm run build"
+
+[deploy]
+startCommand = "cd web && npm run start"
+healthcheckPath = "/"
+restartPolicyType = "ON_FAILURE"
