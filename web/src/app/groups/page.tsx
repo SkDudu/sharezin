@@ -21,6 +21,7 @@ import { GroupJoinSheet } from "@/components/group-join-sheet";
 import { GroupLeaveSheet, GroupConfirmSheet } from "@/components/group-leave-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ListCardsSkeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 function initial(name?: string | null, email?: string | null) {
@@ -219,9 +220,7 @@ function GroupsContent() {
       ) : null}
 
       {groups === undefined ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          Carregando…
-        </p>
+        <ListCardsSkeleton />
       ) : groups.length === 0 ? (
         /* Paper G0 — empty grupos */
         <div className="flex flex-1 flex-col items-center justify-center gap-7 py-10">
@@ -578,9 +577,14 @@ export default function GroupsPage() {
     <AuthGate>
       <Suspense
         fallback={
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            Carregando…
-          </p>
+          <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-2 pb-28 md:gap-7 md:px-12 md:py-10 md:pb-10">
+            <header className="flex flex-col gap-1">
+              <h1 className="font-display text-2xl leading-[30px] font-extrabold tracking-[-0.03em] text-foreground md:text-[36px] md:leading-[44px]">
+                Grupos
+              </h1>
+            </header>
+            <ListCardsSkeleton />
+          </div>
         }
       >
         <GroupsContent />

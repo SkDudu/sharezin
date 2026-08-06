@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { AuthGate } from "@/components/auth-gate";
+import { Skeleton } from "@/components/ui/skeleton";
 import { brl, brlWhole } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -83,9 +84,35 @@ function DashboardContent() {
 
   if (stats === undefined || me === undefined) {
     return (
-      <p className="py-16 text-center text-sm text-muted-foreground">
-        Carregando dados…
-      </p>
+      <div
+        className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-2 pb-28 md:gap-7 md:px-12 md:py-10 md:pb-10"
+        aria-busy="true"
+        aria-label="Carregando"
+      >
+        <header className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-1">
+            <Skeleton className="h-3.5 w-24" />
+            <h1 className="font-display text-2xl leading-[30px] font-extrabold tracking-[-0.03em] text-foreground md:text-[36px] md:leading-[44px]">
+              Dashboard
+            </h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-9 w-20 rounded-full" />
+            <Skeleton className="size-9 rounded-full" />
+          </div>
+        </header>
+
+        <div className="flex flex-col gap-5 md:flex-row">
+          <Skeleton className="h-[148px] w-full rounded-2xl md:min-w-0 md:flex-[1.2]" />
+          <div className="flex gap-2.5 md:min-w-0 md:flex-1 md:flex-col md:gap-3">
+            <Skeleton className="h-[72px] min-w-0 flex-1 rounded-xl md:h-[88px]" />
+            <Skeleton className="h-[72px] min-w-0 flex-1 rounded-xl md:h-[88px]" />
+            <Skeleton className="h-[72px] min-w-0 flex-1 rounded-xl md:h-[88px]" />
+          </div>
+        </div>
+
+        <Skeleton className="h-[200px] w-full rounded-2xl md:min-h-[280px] md:flex-1" />
+      </div>
     );
   }
 

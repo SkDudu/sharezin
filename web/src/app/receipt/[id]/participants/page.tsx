@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { AuthGate } from "@/components/auth-gate";
 import { Button } from "@/components/ui/button";
+import { ReceiptPageSkeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { brl } from "@/lib/format";
 import { useReceiptGet } from "@/lib/use-receipt-get";
@@ -172,11 +173,7 @@ function ParticipantsContent() {
   }, [rows, selected, data]);
 
   if (data === undefined || me == null || !isCreator) {
-    return (
-      <p className="py-16 text-center text-sm text-muted-foreground">
-        Carregando…
-      </p>
-    );
+    return <ReceiptPageSkeleton />;
   }
 
   const { receipt, participants } = data;
