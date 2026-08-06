@@ -38,31 +38,47 @@ export const metadata: Metadata = {
     capable: true,
     title: "Sharezin",
     statusBarStyle: "black-translucent",
-    // ponytail: portrait splash only; Android builds splash from manifest bg+icon
+    // ponytail: native splash = system scheme; in-app BootSplash = sharezin-theme
     startupImage: [
       {
-        url: "/splash/iphone-x.png",
+        url: "/splash/iphone-x-dark.png",
         media:
-          "(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)",
+          "(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/splash/iphone-14-pro.png",
+        url: "/splash/iphone-x-light.png",
         media:
-          "(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)",
+          "(prefers-color-scheme: light) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/splash/iphone-12-pro-max.png",
+        url: "/splash/iphone-14-pro-dark.png",
         media:
-          "(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)",
+          "(prefers-color-scheme: dark) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/splash/iphone-15-pro.png",
+        url: "/splash/iphone-14-pro-light.png",
         media:
-          "(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)",
+          "(prefers-color-scheme: light) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/splash/android-generic.png",
-        media: "(device-width: 360px) and (device-height: 640px)",
+        url: "/splash/iphone-12-pro-max-dark.png",
+        media:
+          "(prefers-color-scheme: dark) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)",
+      },
+      {
+        url: "/splash/iphone-12-pro-max-light.png",
+        media:
+          "(prefers-color-scheme: light) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)",
+      },
+      {
+        url: "/splash/iphone-15-pro-dark.png",
+        media:
+          "(prefers-color-scheme: dark) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)",
+      },
+      {
+        url: "/splash/iphone-15-pro-light.png",
+        media:
+          "(prefers-color-scheme: light) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)",
       },
     ],
   },

@@ -4,6 +4,7 @@ import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient } from "convex/react";
 import { type ReactNode } from "react";
 
+import { BootSplash } from "@/components/boot-splash";
 import { SharezinToaster } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/theme";
 
@@ -15,6 +16,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <ConvexAuthProvider client={convex}>
+        <BootSplash />
         {children}
         <SharezinToaster />
       </ConvexAuthProvider>

@@ -16,7 +16,8 @@ export function LogoMark({
       className={cn("shrink-0", className)}
       aria-hidden
     >
-      <rect width="48" height="48" rx="12" fill="var(--color-primary)" />
+      {/* ponytail: rx 16 ≈ 33% — splash/app icon squircle */}
+      <rect width="48" height="48" rx="16" fill="var(--color-primary)" />
       <rect
         x="8"
         y="10"
