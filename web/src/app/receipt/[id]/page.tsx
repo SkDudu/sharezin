@@ -23,6 +23,7 @@ import { AuthGate } from "@/components/auth-gate";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ReceiptPageSkeleton } from "@/components/ui/skeleton";
 import { brl, parseReais, relativeTime } from "@/lib/format";
 import { useReceiptGet } from "@/lib/use-receipt-get";
 import { cn } from "@/lib/utils";
@@ -209,11 +210,7 @@ function ReceiptDetailContent() {
   }
 
   if (data === undefined || me == null) {
-    return (
-      <p className="py-16 text-center text-sm text-muted-foreground">
-        Carregando…
-      </p>
-    );
+    return <ReceiptPageSkeleton />;
   }
 
   const { receipt, participants, items, totals, pendingDeleteRequests } = data;

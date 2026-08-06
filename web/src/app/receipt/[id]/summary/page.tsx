@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import { AuthGate } from "@/components/auth-gate";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ReceiptPageSkeleton } from "@/components/ui/skeleton";
 import { brl, brlAmount, relativeTime } from "@/lib/format";
 import { useReceiptGet } from "@/lib/use-receipt-get";
 import { cn } from "@/lib/utils";
@@ -186,11 +187,7 @@ function SummaryContent() {
   const data = useReceiptGet(receiptId);
 
   if (data === undefined || me == null) {
-    return (
-      <p className="py-16 text-center text-sm text-muted-foreground">
-        Carregando…
-      </p>
-    );
+    return <ReceiptPageSkeleton />;
   }
 
   const { receipt, participants, items, totals } = data;

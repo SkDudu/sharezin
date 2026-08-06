@@ -12,6 +12,7 @@ import { ProfileChangePassword } from "@/components/profile-change-password";
 import { ProfileSignOutSheet } from "@/components/profile-sign-out-sheet";
 import { useTheme } from "@/components/theme";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
 function initial(name?: string | null, email?: string | null) {
@@ -47,7 +48,18 @@ function ProfileContent() {
         </header>
 
         {me === undefined ? (
-          <p className="text-sm text-muted-foreground">Carregando…</p>
+          <div className="flex flex-col gap-5" aria-busy="true" aria-label="Carregando">
+            <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-5 py-7 md:flex-row md:gap-5 md:px-8">
+              <Skeleton className="size-[88px] shrink-0 rounded-full md:size-20" />
+              <div className="flex w-full flex-col items-center gap-2 md:items-start">
+                <Skeleton className="h-7 w-36" />
+                <Skeleton className="h-4 w-48" />
+              </div>
+            </div>
+            <Skeleton className="h-[70px] w-full rounded-2xl" />
+            <Skeleton className="h-[70px] w-full rounded-2xl" />
+            <Skeleton className="h-12 w-full rounded-xl md:w-40" />
+          </div>
         ) : (
           <>
             {/* Avatar card — stacked mobile, row desktop */}

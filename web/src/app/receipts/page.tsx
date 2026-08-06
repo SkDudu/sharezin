@@ -11,6 +11,7 @@ import { AuthGate } from "@/components/auth-gate";
 import { JoinReceiptSheet } from "@/components/join-receipt-sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { ListCardsSkeleton } from "@/components/ui/skeleton";
 import { brl, relativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -95,9 +96,7 @@ function ReceiptsContent() {
       ) : null}
 
       {receipts === undefined ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          Carregando…
-        </p>
+        <ListCardsSkeleton />
       ) : isEmptyAll ? (
         /* Paper R0 — empty recibos */
         <div className="flex flex-1 flex-col items-center justify-center gap-7 py-10">
@@ -231,9 +230,14 @@ export default function ReceiptsPage() {
     <AuthGate>
       <Suspense
         fallback={
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            Carregando…
-          </p>
+          <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-2 pb-28 md:gap-7 md:px-12 md:py-10 md:pb-10">
+            <header className="flex flex-col gap-1">
+              <h1 className="font-display text-2xl leading-[30px] font-extrabold tracking-[-0.03em] text-foreground md:text-[36px] md:leading-[44px]">
+                Recibos
+              </h1>
+            </header>
+            <ListCardsSkeleton />
+          </div>
         }
       >
         <ReceiptsContent />
