@@ -4,8 +4,8 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "@/components/ui/toast";
 
 import { LogoLockup, LogoMark } from "@/components/logo";
@@ -99,9 +99,16 @@ function ReceiptPreview() {
 export function AuthScreen({ mode }: { mode: AuthMode }) {
   const { signIn } = useAuthActions();
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const router = useRouter();
   // ponytail: don't unmount form when auth flickers isLoading (mobile loses pending)
   const booted = useRef(false);
   if (!isLoading) booted.current = true;
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   const t = copy[mode];
   const [name, setName] = useState("");
@@ -113,7 +120,7 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
   const [resetSent, setResetSent] = useState(false);
 
   if (isAuthenticated) {
-    redirect("/");
+    return null;
   }
 
   if (isLoading && !booted.current) {
@@ -165,6 +172,8 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
       // ponytail: Password can resolve { signingIn: false } instead of throw
       if (!result.signingIn) {
         toast.error("Credenciais incorretas, tente novamente");
+      } else {
+        router.replace("/");
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);

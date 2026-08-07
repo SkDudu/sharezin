@@ -131,16 +131,7 @@ npm run deploy         # deploy via wrangler
 npx convex deploy
 ```
 
-### Após deploy do frontend
-
-Auth JWT domain = URL pública do frontend:
-
-```bash
-npx convex env set SITE_URL https://<url-do-frontend>
-npx convex deploy
-```
-
-(`CONVEX_SITE_URL` é built-in no self-host — não pode override via CLI.)
+Password auth uses built-in `CONVEX_SITE_URL` for JWT — no `SITE_URL` env needed.
 
 ## Scripts
 

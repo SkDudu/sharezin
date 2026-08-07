@@ -1,11 +1,18 @@
 "use client";
 
 import { useConvexAuth } from "convex/react";
-import { redirect } from "next/navigation";
-import type { ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, type ReactNode } from "react";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   if (isLoading) {
     return (
@@ -16,7 +23,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    redirect("/login");
+    return null;
   }
 
   return <>{children}</>;
