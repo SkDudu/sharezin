@@ -11,12 +11,15 @@ export const enter = {
   modal: "motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300",
 } as const;
 
+// ponytail: fill-mode-forwards — tw default none snaps opacity back → black flash before unmount
 export const exit = {
-  fade: "motion-safe:animate-out motion-safe:fade-out motion-safe:duration-200",
-  scrim: "motion-safe:animate-out motion-safe:fade-out motion-safe:duration-200",
+  fade: "motion-safe:animate-out motion-safe:fade-out motion-safe:duration-200 motion-safe:fill-mode-forwards",
+  scrim:
+    "motion-safe:animate-out motion-safe:fade-out motion-safe:duration-200 motion-safe:fill-mode-forwards",
   sheet:
-    "motion-safe:animate-out motion-safe:fade-out motion-safe:slide-out-to-bottom-4 motion-safe:duration-300",
-  modal: "motion-safe:animate-out motion-safe:fade-out motion-safe:duration-200",
+    "motion-safe:animate-out motion-safe:fade-out motion-safe:slide-out-to-bottom-4 motion-safe:duration-300 motion-safe:fill-mode-forwards",
+  modal:
+    "motion-safe:animate-out motion-safe:fade-out motion-safe:duration-200 motion-safe:fill-mode-forwards",
 } as const;
 
 export function io(exiting: boolean, enterCls: string, exitCls: string) {
