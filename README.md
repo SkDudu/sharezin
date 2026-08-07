@@ -81,42 +81,66 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
-## Produção (Railway)
+## Produção
 
-Self-hosted: Convex + Postgres + Dashboard + Next no projeto Railway `sharezin`.
+Frontend no **Cloudflare Workers** (OpenNext). Backend Convex self-hosted no **Railway** (Postgres).
 
-| Serviço | URL |
-|---------|-----|
-| App (Next) | https://web-production-2bf38.up.railway.app |
-| Convex API | https://convex-backend-production-ae52.up.railway.app |
-| Dashboard | https://convex-dashboard-production-048f.up.railway.app |
+| Serviço | Onde |
+|---------|------|
+| App (Next) | Cloudflare Workers |
+| Convex API | Railway (self-host) |
 
-### Variáveis locais (self-host)
+URLs de produção ficam em variáveis de ambiente — não commitar no repositório. O dashboard Convex é interno; não documentar URL pública.
 
-Na raiz (`.env.local`, não commitado):
+### Variáveis (não commitar)
+
+Na raiz (`.env.local`):
 
 ```env
-CONVEX_SELF_HOSTED_URL=https://convex-backend-production-ae52.up.railway.app
-CONVEX_SELF_HOSTED_ADMIN_KEY=<admin key via railway ssh + ./generate_admin_key.sh>
+CONVEX_SELF_HOSTED_URL=<url do convex-backend>
+CONVEX_SELF_HOSTED_ADMIN_KEY=<admin key>
 ```
 
 Em `web/.env.local`:
 
 ```env
-NEXT_PUBLIC_CONVEX_URL=https://convex-backend-production-ae52.up.railway.app
+NEXT_PUBLIC_CONVEX_URL=<mesma URL do Convex API>
 ```
 
-### Deploy / push
+### Deploy frontend (Cloudflare)
+
+Workers & Pages → Connect repo → **root directory** `web`.
+
+| Setting | Valor |
+|---------|-------|
+| Build command | `npm ci && opennextjs-cloudflare build` |
+| Env | `NEXT_PUBLIC_CONVEX_URL` = URL do Convex API |
+| Compatibility flags | `nodejs_compat` (via `wrangler.jsonc`) |
+
+CLI local:
 
 ```bash
-# Functions Convex → backend Railway
-npx convex deploy
-
-# Frontend → serviço web
-railway up --service web -m "…"
+cd web
+npm run pages:build    # smoke test
+npm run deploy         # deploy via wrangler
 ```
 
-Dashboard: abra a URL acima e cole a admin key.
+### Deploy backend (Convex)
+
+```bash
+npx convex deploy
+```
+
+### Após deploy do frontend
+
+Auth JWT domain = URL pública do frontend:
+
+```bash
+npx convex env set SITE_URL https://<url-do-frontend>
+npx convex deploy
+```
+
+(`CONVEX_SITE_URL` é built-in no self-host — não pode override via CLI.)
 
 ## Scripts
 
@@ -126,9 +150,10 @@ Dashboard: abra a URL acima e cole a admin key.
 | `npx convex deploy` | raiz | Push das functions (self-host ou cloud) |
 | `npm run test` / `npm run test:once` | raiz | Testes do backend |
 | `npm run dev` | `web/` | Next.js em desenvolvimento |
-| `npm run build` | `web/` | Build de produção |
+| `npm run build` | `web/` | Build Next.js |
+| `npm run pages:build` | `web/` | Build OpenNext para Cloudflare |
+| `npm run deploy` | `web/` | Deploy no Cloudflare Workers |
 | `npm run lint` | `web/` | ESLint |
-| `railway up --service web` | raiz | Deploy do Next no Railway |
 
 ## Conceitos
 

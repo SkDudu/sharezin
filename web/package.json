@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "next build --webpack",
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "pages:build": "opennextjs-cloudflare build",
+    "pages:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@auth/core": "^0.41.1",
     "@base-ui/react": "^1.6.0",
     "@convex-dev/auth": "^0.0.94",
     "@number-flow/react": "^0.6.2",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@visx/event": "^4.0.1-alpha.0",
     "@visx/gradient": "^4.0.1-alpha.0",
     "@visx/grid": "^4.0.1-alpha.0",
@@ -43,6 +50,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.120.0"
   }
 }
