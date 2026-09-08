@@ -83,29 +83,33 @@ Abra [http://localhost:3000](http://localhost:3000).
 
 ## Produção
 
-Frontend no **Cloudflare Workers** (OpenNext). Backend Convex self-hosted no **Railway** (Postgres).
+Frontend no **Cloudflare Workers** (OpenNext). Backend e dados no **Convex Cloud**. Não há serviço Render: as functions em `convex/` sobem com `npx convex deploy`, não com um Node/`npm start`.
 
 | Serviço | Onde |
 |---------|------|
 | App (Next) | Cloudflare Workers |
-| Convex API | Railway (self-host) |
+| Convex (API + DB) | Convex Cloud |
 
-URLs de produção ficam em variáveis de ambiente — não commitar no repositório. O dashboard Convex é interno; não documentar URL pública.
+URLs de produção ficam em variáveis de ambiente — não commitar no repositório.
 
 ### Variáveis (não commitar)
 
 Na raiz (`.env.local`):
 
 ```env
-CONVEX_SELF_HOSTED_URL=<url do convex-backend>
-CONVEX_SELF_HOSTED_ADMIN_KEY=<admin key>
+CONVEX_DEPLOYMENT=dev:seu-deployment
+CONVEX_URL=https://<deployment>.convex.cloud
 ```
 
-Em `web/.env.local`:
+`npx convex login` + `npx convex dev` preenchem isso.
+
+Em `web/.env.local` e no Cloudflare (`NEXT_PUBLIC_CONVEX_URL`):
 
 ```env
-NEXT_PUBLIC_CONVEX_URL=<mesma URL do Convex API>
+NEXT_PUBLIC_CONVEX_URL=https://<deployment>.convex.cloud
 ```
+
+Dev usa o deployment `dev:`; produção usa o URL do `npx convex deploy` (dashboard → Production).
 
 ### Deploy frontend (Cloudflare)
 
@@ -125,20 +129,20 @@ npm run pages:build    # smoke test
 npm run deploy         # deploy via wrangler
 ```
 
-### Deploy backend (Convex)
+### Deploy backend (Convex Cloud)
 
 ```bash
 npx convex deploy
 ```
 
-Password auth uses built-in `CONVEX_SITE_URL` for JWT — no `SITE_URL` env needed.
+Cria/atualiza o deployment de **produção** no Convex Cloud. Auth JWT usa `CONVEX_SITE_URL` do próprio deployment Cloud — não precisa de `SITE_URL` extra.
 
 ## Scripts
 
 | Comando | Onde | Descrição |
 |---------|------|-----------|
 | `npx convex dev` | raiz | Backend Convex em modo dev |
-| `npx convex deploy` | raiz | Push das functions (self-host ou cloud) |
+| `npx convex deploy` | raiz | Push das functions para o Convex Cloud (produção) |
 | `npm run test` / `npm run test:once` | raiz | Testes do backend |
 | `npm run dev` | `web/` | Next.js em desenvolvimento |
 | `npm run build` | `web/` | Build Next.js |
